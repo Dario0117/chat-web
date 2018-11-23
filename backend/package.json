@@ -4,9 +4,9 @@
   "description": "Backend for chat web",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll",
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon -L src/index.js"
   },
   "keywords": [
     "backend",
@@ -16,9 +16,15 @@
   "author": "Esteban Dario Barboza Primera <dario0117@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.4"
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "mysql2": "^1.6.4"
   },
   "devDependencies": {
-    "nodemon": "^1.18.6"
+    "faker": "^4.1.0",
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.6",
+    "supertest": "^3.3.0"
   }
 }
