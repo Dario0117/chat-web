@@ -1,0 +1,24 @@
+{
+  "name": "backend-chat-web",
+  "version": "1.0.0",
+  "description": "Backend for chat web",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "backend",
+    "chat",
+    "web"
+  ],
+  "author": "Esteban Dario Barboza Primera <dario0117@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
