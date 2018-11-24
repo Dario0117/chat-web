@@ -21,4 +21,18 @@ const createUser = (data) => {
     })
 }
 
+const getAllUsers = () => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT username, name, email, profile_pic_url 
+        FROM users
+        `;
+        con.query(q, (err, rows) => {
+            if (err) reject(err);
+            resolve(rows);
+        })
+    })
+}
+
 exports.createUser = createUser;
+exports.getAllUsers = getAllUsers;

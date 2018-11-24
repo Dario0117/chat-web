@@ -1,5 +1,8 @@
 const router = require('express').Router();
-const { createUser } = require('../models/user.model');
+const { 
+    createUser,
+    getAllUsers,
+} = require('../models/user.model');
 
 router.route('/register')
     .post((req, res) => {
@@ -8,7 +11,21 @@ router.route('/register')
                 res.status(201).json(data);
             })
             .catch((err) => {
-                res.status(400).json(err);
+                let error_msg = {
+                    'msg': 'Email or username duplicated, try another one.'
+                };
+                res.status(400).json(error_msg);
+            });
+    });
+
+router.route('/users')
+    .get((req, res) => {
+        getAllUsers()
+            .then((data) => {
+                res.status(200).json(data);
+            })
+            .catch((err) => {
+                res.status(404).json(err);
             });
     });
 

@@ -62,3 +62,6 @@ typings/
 
 # backup files
 *.bak
+
+# Request files
+*.http
