@@ -34,5 +34,23 @@ const getAllUsers = () => {
     })
 }
 
+const searchUsers = (search_string) => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT * FROM users 
+        where username LIKE ? or name LIKE ?;
+        `;
+        let qp = [
+            '%' + search_string + '%', 
+            '%' + search_string + '%'
+        ]
+        con.query(q, qp, (err, rows) => {
+            if (err) reject(err);
+            resolve(rows);
+        })
+    })
+}
+
 exports.createUser = createUser;
 exports.getAllUsers = getAllUsers;
+exports.searchUsers = searchUsers;
