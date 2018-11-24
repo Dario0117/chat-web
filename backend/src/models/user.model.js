@@ -51,6 +51,32 @@ const searchUsers = (search_string) => {
     })
 }
 
+const login = (username, password) => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT * FROM users where username = ? and password = ?
+        `;
+        con.query(q, [username, password], (err, rows) => {
+            if (err) reject(err);
+            resolve(rows);
+        });
+    })
+}
+
+const getUserByID = (id) => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT * FROM users where id = ?
+        `;
+        con.query(q, [id], (err, rows) => {
+            if (err) reject(err);
+            resolve(rows);
+        });
+    })
+}
+
 exports.createUser = createUser;
 exports.getAllUsers = getAllUsers;
 exports.searchUsers = searchUsers;
+exports.login = login;
+exports.getUserByID = getUserByID;

@@ -19,6 +19,27 @@ describe('Model: User', () => {
             .send(user_global)
             .expect(201, done);
     });
+    it('should get JWT with correct credentials', (done) => {
+        request(app)
+            .post('/login')
+            .send({
+                username: user_global.username,
+                password: user_global.password,
+            })
+            .expect(200)
+            .then((res) => {
+                let { body } = res;
+                expect(body.token).toBeTruthy();
+                expect(body.user.password).toBeFalsy();
+                expect(body.user.id).toBeFalsy();
+                expect(body.user.name).toBe(user_global.name);
+                expect(body.user.username).toBe(user_global.username);
+                expect(body.user.email).toBe(user_global.email);
+                expect(body.user.profile_pic_url).toBe(user_global.profile_pic_url);
+                user_global.token = 'bearer ' + body.token;
+                done();
+            })
+    });
     it('should not create a user', (done) => {
         request(app)
             .post('/register')
@@ -28,6 +49,7 @@ describe('Model: User', () => {
     it('should get all the users', (done) => {
         request(app)
             .get('/users')
+            .set('Authorization', user_global.token)
             .then((res) => {
                 expect(res.status).toBe(200);
                 let { body } = res;
@@ -53,6 +75,7 @@ describe('Model: User', () => {
                 let qs = '.';
                 request(app)
                     .get(`/users?q=${qs}`)
+                    .set('Authorization', user_global.token)
                     .expect(200)
                     .then((res) => {
                         let { body } = res;
@@ -66,4 +89,5 @@ describe('Model: User', () => {
                     });
             });
     });
+    
 });

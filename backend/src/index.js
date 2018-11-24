@@ -1,11 +1,14 @@
 const express = require('express');
 const routes = require('./routes');
 const connection = require('./db');
+const passport = require('passport');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+require('./auth')();
 app.use(express.json());
+app.use(passport.initialize());
 app.use('/', routes);
 
 if (process.env.NODE_ENV !== 'test') {

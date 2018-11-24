@@ -1,8 +1,12 @@
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+require('dotenv').config();
 const { 
     createUser,
     getAllUsers,
     searchUsers,
+    login,
 } = require('../models/user.model');
 
 router.route('/register')
@@ -19,7 +23,31 @@ router.route('/register')
             });
     });
 
+router.route('/login')
+    .post((req, res) => {
+        let { username, password } = req.body;
+        login(username, password)
+            .then((data) => {
+                let user_data = {};
+                user_data.username = data[0].username;
+                user_data.email = data[0].email;
+                user_data.name = data[0].name;
+                user_data.profile_pic_url = data[0].profile_pic_url;
+                res.status(200).json({
+                    token: jwt.sign({ id: data[0].id }, process.env.JWT_SECRET),
+                    user: user_data,
+                });
+            })
+            .catch((err) => {
+                let error_msg = {
+                    'msg': 'Incorrect username or password.'
+                };
+                res.status(400).json(error_msg);
+            });
+    });
+
 router.route('/users')
+    .all(passport.authenticate('jwt', { session: false }))
     .get((req, res) => {
         if (Object.keys(req.query).length > 0) {
             let { q } = req.query;
