@@ -13,7 +13,8 @@ const connection = mysql.createConnection({
     host: mysql_host,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
-    database: mysql_db
+    database: mysql_db,
+    multipleStatements: true,
   });
 
 module.exports = connection;

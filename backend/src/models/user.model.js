@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const con = require('../db');
 
+//TODO: Encrypt password with bcrypt
+
 const createUser = (data) => {
     return new Promise((resolve, reject) => {
         let q = ` 
@@ -13,9 +15,11 @@ const createUser = (data) => {
             data.email,
             data.name,
         ];
-        con.query(q, params, (err) => {
-            if (err) reject(err);
-            resolve();
+        con.query(q, params, (err, result) => {
+            if (err) return reject(err);
+            resolve({
+                id: result.insertId,
+            });
         });
     });
 }
