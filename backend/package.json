@@ -4,7 +4,7 @@
   "description": "Backend for chat web",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --watchAll --verbose",
     "start": "node src/index.js",
     "dev": "nodemon -L src/index.js"
   },

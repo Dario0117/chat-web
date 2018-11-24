@@ -4,7 +4,7 @@ const app = require('../../src/index');
 
 faker.locale = 'es_MX';
 
-describe('Model: User', () => {
+describe('Router: User', () => {
     let user_global;
     beforeAll(() => {
         user_global = {

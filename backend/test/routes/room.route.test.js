@@ -4,7 +4,7 @@ const app = require('../../src/index');
 
 faker.locale = 'es_MX';
 
-describe.only('Model: Room', () => {
+describe('Router: Room', () => {
     let user_global_1;
     let user_global_2;
     let user_global_3;
