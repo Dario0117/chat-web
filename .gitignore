@@ -68,3 +68,6 @@ typings/
 
 # VS code config
 .vscode
+
+# Uploads temp folder
+backend/uploads

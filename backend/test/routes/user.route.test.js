@@ -5,14 +5,16 @@ const app = require('../../src/index');
 faker.locale = 'es_MX';
 
 describe('Model: User', () => {
-    let user_global = {
-        username: faker.internet.userName(),
-        password: faker.internet.password(),
-        email: faker.internet.email(),
-        name: faker.name.findName(),
-        profile_pic_url: faker.image.imageUrl(),
-        token: '',
-    };
+    let user_global;
+    beforeAll(() => {
+        user_global = {
+            username: faker.internet.userName(),
+            password: faker.internet.password(),
+            email: faker.internet.email(),
+            name: faker.name.findName(),
+            token: '',
+        };
+    });
     it('should create a user', (done) => {
         request(app)
             .post('/register')
@@ -35,7 +37,6 @@ describe('Model: User', () => {
                 expect(body.user.name).toBe(user_global.name);
                 expect(body.user.username).toBe(user_global.username);
                 expect(body.user.email).toBe(user_global.email);
-                expect(body.user.profile_pic_url).toBe(user_global.profile_pic_url);
                 user_global.token = 'bearer ' + body.token;
                 done();
             })
@@ -60,7 +61,6 @@ describe('Model: User', () => {
                     expect(user.name).toBeTruthy();
                     expect(user.username).toBeTruthy();
                     expect(user.email).toBeTruthy();
-                    expect(user.profile_pic_url).toBeTruthy();
                 }
                 done();
             })
@@ -89,5 +89,11 @@ describe('Model: User', () => {
                     });
             });
     });
-    
+    it('should allow any user update his profile pic', (done) => {
+        request(app)
+            .patch('/profile')
+            .set('Authorization', user_global.token)
+            .attach('profile_pic', 'test/routes/new_pic.png')
+            .expect(200, done);
+    });
 });
