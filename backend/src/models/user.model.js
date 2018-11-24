@@ -1,17 +1,17 @@
 const bcrypt = require('bcryptjs');
 const con = require('../db');
 
-//TODO: Encrypt password with bcrypt
-
 const createUser = (data) => {
     return new Promise((resolve, reject) => {
         let q = ` 
         INSERT INTO users (username, password, email, name) 
         VALUES (?,?,?,?)
         `;
+        let salt = bcrypt.genSaltSync(10);
+        let pw = bcrypt.hashSync(data.password, salt);
         let params = [
             data.username,
-            data.password,
+            pw,
             data.email,
             data.name,
         ];
@@ -57,11 +57,17 @@ const searchUsers = (search_string) => {
 const login = (username, password) => {
     return new Promise((resolve, reject) => {
         let q = `
-        SELECT * FROM users where username = ? and password = ?
+        SELECT * FROM users where username = ?
         `;
-        con.query(q, [username, password], (err, rows) => {
-            if (err) reject(err);
-            resolve(rows);
+        con.query(q, [username], (err, rows) => {
+            if (err) return reject(err);
+            if (bcrypt.compareSync(password, rows[0].password)){
+                resolve(rows);
+            }else {
+                reject({
+                    msg: 'Wrong password.',
+                })
+            }
         });
     });
 }
