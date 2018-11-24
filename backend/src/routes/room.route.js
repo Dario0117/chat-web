@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { 
     createRoom,
+    searchRooms,
 } = require('../models/room.model');
 
 router.route('/rooms')
@@ -11,16 +11,38 @@ router.route('/rooms')
         let body = {
             message: req.body.message,
             users: req.body.receivers.concat(req.user.id),
+            name: req.body.name || null,
         };
+        if (body.users.length > 2 && body.name === null) {
+            res.status(400).json({
+                msg: "You need a name for this group."
+            });
+        }
         createRoom(body)
             .then((data) => {
                 res.status(201).json(data);
             })
             .catch(() => {
-                res.status(400).send({
+                res.status(400).json({
                     msg: "Can't create this conversation, please try with another users."
                 });
             });
+    })
+    .get((req, res) => {
+        if (Object.keys(req.query).length > 0) {
+            let { q } = req.query;
+            searchRooms(q, req.user.id)
+                .then((data) => {
+                    res.status(200).json(data);
+                })
+                .catch((err) => {
+                    res.status(404).json(err);
+                });
+        } else {
+            res.status(400).json({
+                msg: "You must provide a filter parameter."
+            });
+        }
     });
 
 module.exports = router;

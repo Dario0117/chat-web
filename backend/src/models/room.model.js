@@ -31,4 +31,28 @@ const createRoom = ({ message = "", users = [], name = null }) => {
     });
 }
 
+const searchRooms = (search_string, user_id) => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT 
+            distinct r.id,
+            r.name
+        FROM 
+            rooms r,
+            user_room ur
+        WHERE r.name LIKE ?
+            AND r.id IN (SELECT rooms_id FROM user_room ur2 where ur2.users_id = ?)
+        `;
+        let qp = [
+            '%' + search_string + '%', 
+            user_id
+        ];
+        con.query(q, qp, (err, rows) => {
+            if (err) reject(err);
+            resolve(rows);
+        });
+    });
+}
+
 exports.createRoom = createRoom;
+exports.searchRooms = searchRooms;

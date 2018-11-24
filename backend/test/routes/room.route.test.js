@@ -4,7 +4,7 @@ const app = require('../../src/index');
 
 faker.locale = 'es_MX';
 
-describe('Model: Room', () => {
+describe.only('Model: Room', () => {
     let user_global_1;
     let user_global_2;
     let user_global_3;
@@ -79,5 +79,67 @@ describe('Model: Room', () => {
                 receivers: [user_global_2.id],
             })
             .expect(201, done);
+    });
+    it('should throw error when a group is created without name', (done) => {
+        request(app)
+            .post('/rooms')
+            .set('Authorization', user_global_1.token)
+            .send({
+                message: "test message",
+                receivers: [user_global_2.id, user_global_3.id],
+            })
+            .expect(400, done);
+    });
+    it('should create a conversation with a group', (done) => {
+        request(app)
+            .post('/rooms')
+            .set('Authorization', user_global_1.token)
+            .send({
+                message: "test message",
+                receivers: [user_global_2.id, user_global_3.id],
+                name: "Example name",
+            })
+            .expect(201, done);
+    });
+    it('should find a conversation sending a string', async (done) => {
+        await request(app)
+            .post('/rooms')
+            .set('Authorization', user_global_1.token)
+            .send({
+                message: "test message",
+                receivers: [user_global_2.id, user_global_3.id],
+                name: "SEARCHABLE1",
+            });
+
+        await request(app)
+            .post('/rooms')
+            .set('Authorization', user_global_1.token)
+            .send({
+                message: "test message",
+                receivers: [user_global_2.id, user_global_3.id],
+                name: "SEARCHABLE2",
+            });
+
+        await request(app)
+            .post('/rooms')
+            .set('Authorization', user_global_1.token)
+            .send({
+                message: "test message",
+                receivers: [user_global_2.id, user_global_3.id],
+                name: "SEARCHABLE3",
+            });
+        
+        let qs = 'SEARCHABLE';
+        let res = await request(app)
+            .get(`/rooms?q=${qs}`)
+            .set('Authorization', user_global_1.token)
+            .expect(200);
+
+        let { body } = res;
+        expect(body.length).toBe(3);
+        for(let conv of body){
+            expect(conv.name.indexOf(qs)).toBeGreaterThan(-1);
+        }
+        done();
     });
 });
