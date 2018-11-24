@@ -29,7 +29,7 @@ const fetchMessages = (room_id, user_id) => {
             if (err) return reject(err);
             if (rows.length != 0) {
                 let q = `
-                SELECT * FROM messages WHERE room_id = ? LIMIT 30
+                SELECT * FROM (SELECT * FROM messages WHERE room_id = ? order by date desc limit 30) as t order by date;
                 `;
                 con.query(q, [ room_id ], (err, rows) => {
                     if (err) return reject(err);
