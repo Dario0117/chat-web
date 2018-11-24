@@ -17,32 +17,27 @@ router.route('/rooms')
             res.status(400).json({
                 msg: "You need a name for this group."
             });
-        }
-        createRoom(body)
-            .then((data) => {
-                res.status(201).json(data);
-            })
-            .catch(() => {
-                res.status(400).json({
-                    msg: "Can't create this conversation, please try with another users."
+        } else {
+            createRoom(body)
+                .then((data) => {
+                    res.status(201).json(data);
+                })
+                .catch(() => {
+                    res.status(400).json({
+                        msg: "Can't create this conversation, please try with another users."
+                    });
                 });
-            });
+        }
     })
     .get((req, res) => {
-        if (Object.keys(req.query).length > 0) {
-            let { q } = req.query;
-            searchRooms(q, req.user.id)
-                .then((data) => {
-                    res.status(200).json(data);
-                })
-                .catch((err) => {
-                    res.status(404).json(err);
-                });
-        } else {
-            res.status(400).json({
-                msg: "You must provide a filter parameter."
+        let q = req.query.q || "";
+        searchRooms(q, req.user.id)
+            .then((data) => {
+                res.status(200).json(data);
+            })
+            .catch((err) => {
+                res.status(404).json(err);
             });
-        }
     });
 
 module.exports = router;

@@ -25,7 +25,9 @@ const createRoom = ({ message = "", users = [], name = null }) => {
             params.push(sender_id);
             con.query(q_asociate_user_with_room, params, (err) => {
                 if (err) return reject(err);
-                resolve();
+                resolve({
+                    id: room_id,
+                });
             });
         });
     });
@@ -42,6 +44,7 @@ const searchRooms = (search_string, user_id) => {
             user_room ur
         WHERE r.name LIKE ?
             AND r.id IN (SELECT rooms_id FROM user_room ur2 where ur2.users_id = ?)
+        LIMIT 20
         `;
         let qp = [
             '%' + search_string + '%', 
