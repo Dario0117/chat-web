@@ -144,7 +144,9 @@ class Conversation extends Component {
                 </Dropdown>
                 <ul>
                     {this.state.conversations.map((el) => {
-                        return (<li key={el.id}># {el.name}</li>)
+                        return (<li onClick={() => {
+                            this.props.changeSelectedRoom(el.id);
+                        }} key={el.id}># {el.name}</li>)
                     })}
                 </ul>
 

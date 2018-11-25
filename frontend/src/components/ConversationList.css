@@ -9,6 +9,7 @@ li {
     color: white;
     font-weight: bold;
     font-size: 16px;
+    cursor: pointer;
 }
 
 li:hover {

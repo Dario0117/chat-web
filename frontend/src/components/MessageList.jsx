@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Input, List, Avatar } from 'antd';
 import './MessageList.css';
-import { 
-    getInfoFromRoom, getUsersFromRoom 
+import {
+    getInfoFromRoom, getUsersFromRoom
 } from '../utils/RequestManager';
 import default_pic from './default_pic.png';
 
@@ -18,20 +18,20 @@ export default class MessageList extends Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
             chatName: "",
             messages: [],
             users: {},
         }
+        this.ready = true;
     }
 
     dateParser = (date) => {
         function pad(n) {
-            return n<10 ? '0'+n : n;
+            return n < 10 ? '0' + n : n;
         }
         let day = pad(date.getDate());
-        let month = pad(date.getMonth()+1);
+        let month = pad(date.getMonth() + 1);
         let year = date.getFullYear();
         let hour = pad(date.getHours());
         let minute = pad(date.getMinutes());
@@ -40,32 +40,41 @@ export default class MessageList extends Component {
         return date_parsed;
     }
 
-    componentDidMount = () => {
+    refreshState = () => {
+        this.ready = false;
         Promise.all([
             getUsersFromRoom(this.props.roomID),
             getInfoFromRoom(this.props.roomID),
         ])
-        .then((results) => {
-            let parsedUsers = {};
-            for(let user of results[0]) {
-                parsedUsers[user.id] = {
-                    profile_pic: user.profile_pic || default_pic,
-                    name: user.name,
+            .then((results) => {
+                let parsedUsers = {};
+                for (let user of results[0]) {
+                    parsedUsers[user.id] = {
+                        profile_pic: user.profile_pic || default_pic,
+                        name: user.name,
+                    }
                 }
-            }
-            this.setState({
-                chatName: results[1].name,
-                users: parsedUsers,
-                messages: results[1].messages.map((msg) => {
-                    let m = {...msg};
-                    m.date = this.dateParser(new Date(m.date));
-                    return m;
-                }),
+                this.setState({
+                    chatName: results[1].name,
+                    users: parsedUsers,
+                    messages: results[1].messages.map((msg) => {
+                        let m = { ...msg };
+                        m.date = this.dateParser(new Date(m.date));
+                        return m;
+                    }),
+                });
+                this.ready = true;
             });
-        });
+    }
+
+    componentDidMount = () => {
+        this.refreshState();
     }
 
     render() {
+        if (this.ready) {
+            this.refreshState();
+        }
         return (
             <>
                 <div className="conversation-name">

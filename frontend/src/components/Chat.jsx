@@ -37,16 +37,22 @@ export default class Chat extends Component {
         this.refreshProfile();
     }
 
+    changeSelectedRoom = (room_id) => {
+        this.setState({
+            selectedChat: room_id,
+        })
+    }
+
     render() {
         return (
             <div>
                 <div className="split left">
                     <Profile updateProfilePic={this.updatePic} name={this.state.myName} src={this.state.myPic} />
-                    <ConversationList />
+                    <ConversationList changeSelectedRoom={this.changeSelectedRoom} />
                 </div>
 
                 <div className="split right">
-                    <MessageList roomID={this.state.selectedChat}/>
+                    <MessageList roomID={this.state.selectedChat} />
                 </div>
             </div>
         )
