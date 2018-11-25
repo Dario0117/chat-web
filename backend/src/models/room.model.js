@@ -80,6 +80,28 @@ const getAllRooms = (user_id) => {
     });
 }
 
+const getUsersFromRoom = (room_id) => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT 
+            users.id,
+            users.name,
+            users.profile_pic
+        FROM 
+            user_room ur 
+        right join users on ur.users_id = users.id
+        where 
+            ur.rooms_id = ?
+        ;
+        `;
+        con.query(q, [ room_id ], (err, rows) => {
+            if (err) reject(err);
+            resolve(rows);
+        });
+    });
+}
+
 exports.createRoom = createRoom;
 exports.searchRooms = searchRooms;
 exports.getAllRooms = getAllRooms;
+exports.getUsersFromRoom = getUsersFromRoom;

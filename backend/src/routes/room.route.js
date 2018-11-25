@@ -4,7 +4,10 @@ const {
     createRoom,
     searchRooms,
     getAllRooms,
+    getUsersFromRoom,
 } = require('../models/room.model');
+
+const { fetchMessages } = require('../models/message.model');
 
 router.route('/rooms')
     .all(passport.authenticate('jwt', { session: false }))
@@ -49,6 +52,32 @@ router.route('/rooms')
                     res.status(404).json(err);
                 });
         }
+    });
+
+// TEMPORAL ENDPOINT
+router.route('/rooms/:id')
+    .all(passport.authenticate('jwt', { session: false }))
+    .get((req, res) => {
+        fetchMessages(req.params.id, req.user.id)
+            .then((data) => {
+                res.status(200).json(data);
+            })
+            .catch((err) => {
+                res.status(404).json(err);
+            });
+    });
+
+// TEMPORAL ENDPOINT
+router.route('/rooms/:id/users')
+    .all(passport.authenticate('jwt', { session: false }))
+    .get((req, res) => {
+        getUsersFromRoom(req.params.id, req.user.id)
+            .then((data) => {
+                res.status(200).json(data);
+            })
+            .catch((err) => {
+                res.status(404).json(err);
+            });
     });
 
 module.exports = router;

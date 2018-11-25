@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import './ConversationList.css';
 import {
-    getUsers, getRooms,
+    listUsers, listRooms,
     createRoom, searchConversation
 } from '../utils/RequestManager';
 
@@ -30,7 +30,7 @@ class Conversation extends Component {
     }
 
     componentDidMount = () => {
-        getUsers()
+        listUsers()
             .then((res) => {
                 this.setState({
                     users: res,
@@ -38,7 +38,7 @@ class Conversation extends Component {
                 });
             }).catch(console.log)
 
-        getRooms()
+        listRooms()
             .then((res) => {
                 this.setState({
                     conversations: res,
@@ -68,7 +68,7 @@ class Conversation extends Component {
             }).catch(console.log);
 
 
-        await getRooms()
+        await listRooms()
             .then((res) => {
                 this.setState({
                     conversations: res,

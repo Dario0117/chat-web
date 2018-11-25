@@ -1,6 +1,6 @@
 import HOST from '../settings';
 
-const getUsers = (filter) => {
+const listUsers = (filter) => {
     const options = {
         method: 'GET',
         headers: {
@@ -16,7 +16,7 @@ const getUsers = (filter) => {
         .then((res) => res.json());
 }
 
-const getRooms = (filter) => {
+const listRooms = (filter) => {
     const options = {
         method: 'GET',
         headers: {
@@ -48,8 +48,8 @@ const createRoom = (body) => {
 
 const searchConversation = (filter) => {
     return Promise.all([
-        getRooms(filter),
-        getUsers(filter),
+        listRooms(filter),
+        listUsers(filter),
     ]);
 }
 
@@ -80,11 +80,37 @@ const getMyInfo = () => {
         .then((res) => res.json());
 }
 
+const getInfoFromRoom = (room_id) => {
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'bearer ' + localStorage.getItem('token'),
+        }
+    };
+    return fetch(`${HOST}/rooms/${room_id}`, options)
+        .then((res) => res.json());
+}
+
+const getUsersFromRoom = (room_id) => {
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'bearer ' + localStorage.getItem('token'),
+        }
+    };
+    return fetch(`${HOST}/rooms/${room_id}/users`, options)
+        .then((res) => res.json());
+}
+
 export {
-    getUsers,
-    getRooms,
+    listUsers,
+    listRooms,
     createRoom,
     searchConversation,
     updateProfilePic,
     getMyInfo,
+    getInfoFromRoom,
+    getUsersFromRoom,
 }

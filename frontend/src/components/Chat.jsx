@@ -13,39 +13,8 @@ export default class Chat extends Component {
         this.state = {
             myName: "",
             myPic: "",
-            chatName: "chat name temp",
-            data: [
-                {
-                    title: 'Ant Design Title 1',
-                },
-                {
-                    title: 'Ant Design Title 2',
-                },
-                {
-                    title: 'Ant Design Title 3',
-                },
-                {
-                    title: 'Ant Design Title 4',
-                },
-                {
-                    title: 'Ant Design Title 4',
-                },
-                {
-                    title: 'Ant Design Title 4',
-                },
-                {
-                    title: 'Ant Design Title 4',
-                },
-                {
-                    title: 'Ant Design Title 4',
-                },
-                {
-                    title: 'Ant Design Title 4',
-                },
-                {
-                    title: 'Ant Design Title 4',
-                },
-            ]
+            selectedChat: 1,
+            data: []
         }
     }
 
@@ -77,7 +46,7 @@ export default class Chat extends Component {
                 </div>
 
                 <div className="split right">
-                    <MessageList chatName={this.state.chatName} data={this.state.data} />
+                    <MessageList roomID={this.state.selectedChat}/>
                 </div>
             </div>
         )
