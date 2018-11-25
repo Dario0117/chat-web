@@ -1,0 +1,15 @@
+.centered {
+    position: relative;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+
+.centered img {
+    width: 200px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -1,0 +1,30 @@
+ul {
+    list-style-type: none;
+    padding: 15px;
+}
+
+li {
+    padding: 7px;
+    margin: 0;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+li:hover {
+    background-color: rgb(37, 28, 36);
+}
+
+.conversation-dropdown {
+    padding-left: 15px;
+    color: rgb(187, 186, 186);
+    font-weight: bold;
+}
+
+.conversation-dropdown:hover {
+    color: rgb(105, 105, 105);
+}
+
+.conversation-box {
+    padding-top: 15px;
+}
