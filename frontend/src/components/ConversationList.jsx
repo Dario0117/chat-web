@@ -26,6 +26,7 @@ class Conversation extends Component {
             results: [],
             conversations: [],
             users: [],
+            selectedConvFromSearch: "",
         }
     }
 
@@ -87,8 +88,11 @@ class Conversation extends Component {
         // window.location.reload(true);
     }
 
-    setSearchCVisible = (SearchCmodalVisible) => {
-        this.setState({ SearchCmodalVisible });
+    setSearchCVisible = (SearchCmodalVisible, cancel = false) => {
+        if (!cancel) {
+            this.props.changeSelectedRoom(this.state.selectedConvFromSearch.split('_').pop());
+        }
+        this.setState({ SearchCmodalVisible, selectedConvFromSearch: '' });
     }
 
     handleMenuClick = (e) => {
@@ -182,7 +186,7 @@ class Conversation extends Component {
                     centered
                     visible={this.state.SearchCmodalVisible}
                     onOk={() => this.setSearchCVisible(false)}
-                    onCancel={() => this.setSearchCVisible(false)}
+                    onCancel={() => this.setSearchCVisible(false, true)}
                 >
                     <Search
                         placeholder=""
@@ -190,10 +194,20 @@ class Conversation extends Component {
                         style={{ width: '100%' }}
                     />
                     <p></p>
+                    <p>
+                        Selected conversation: <strong>{this.state.selectedConvFromSearch.split('_')[0]}</strong>
+                    </p>
+                    <p></p>
                     <List
                         bordered
                         dataSource={this.state.results}
-                        renderItem={item => (<List.Item onClick={() => console.log("les ge", item.split('_').pop())}>{item.split('_')[0]}</List.Item>)}
+                        renderItem={item => (<List.Item onClick={(e) => {
+                            // console.log(e.target.parentElement);
+                            // e.target.parentElement.style.backgroundColor = '#4D394B';
+                            this.setState({
+                                selectedConvFromSearch: item,
+                            })
+                        }}>{item.split('_')[0]}</List.Item>)}
                     />
                 </Modal>
             </div>
