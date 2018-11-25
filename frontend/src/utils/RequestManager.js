@@ -53,9 +53,38 @@ const searchConversation = (filter) => {
     ]);
 }
 
+const updateProfilePic = (image) => {
+    let formData  = new FormData();
+    formData.append('profile_pic', image)
+    let options = {
+        method: 'PATCH',
+        body: formData,
+        headers: {
+            // 'Content-Type': 'multipart/form-data',
+            'Authorization': 'bearer ' + localStorage.getItem('token'),
+        }
+    };
+
+    return fetch(`${HOST}/profile`, options);
+}
+
+const getMyInfo = () => {
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'bearer ' + localStorage.getItem('token'),
+        }
+    };
+    return fetch(`${HOST}/users/me`, options)
+        .then((res) => res.json());
+}
+
 export {
     getUsers,
     getRooms,
     createRoom,
     searchConversation,
+    updateProfilePic,
+    getMyInfo,
 }

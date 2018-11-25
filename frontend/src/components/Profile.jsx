@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './Profile.css';
 import default_pic from './default_pic.png';
-import FileChooser from '../utils/ImgFromFile';
 import { Icon } from 'antd';
 
 export default class Profile extends Component {
@@ -15,13 +14,10 @@ export default class Profile extends Component {
         this.fileChooserElement.click();
     }
 
-    handleFileChooser(e) {
+    handleFileChooser = (e) => {
         let files = e.target.files;
         if (files.length > 0) {
-            if (files[0].type.indexOf('image') !== -1) {
-                FileChooser.imageAsBase64(e.target.files[0])
-                    .then((image) => console.log("image loaded", image));
-            }
+            this.props.updateProfilePic(files[0]);
         }
     }
 

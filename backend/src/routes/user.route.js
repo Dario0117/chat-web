@@ -73,6 +73,14 @@ router.route('/users')
         }
     });
 
+router.route('/users/me')
+    .all(passport.authenticate('jwt', { session: false }))
+    .get((req, res) => {
+        let user = {...req.user}
+        delete user.password;
+        res.status(200).json(user);
+    });
+
 router.route('/profile')
     .all(
         passport.authenticate('jwt', { session: false }),
