@@ -33,3 +33,17 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.message-list {
+    height: 92%;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* background-color: red; */
+}
+
+.input-text {
+    height: 8%;
+    padding: 10px;
+    /* background-color: green; */
+}
