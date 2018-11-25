@@ -20,7 +20,7 @@ class Conversation extends Component {
             convMsg: "",
             NewCmodalVisible: false,
             SearchCmodalVisible: false,
-            results: ['asd', 'asd2'],
+            results: [],
             conversations: [],
             users: [],
         }
@@ -144,9 +144,23 @@ class Conversation extends Component {
     }
 
     searchConv = (value) => {
-        this.setState({
-            results: this.state.results.concat(value)
-        });
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'bearer ' + localStorage.getItem('token'),
+            }
+        };
+        Promise.all([
+            fetch(`${HOST}/rooms?q=${value}`, options).then((res) => res.json()),
+            fetch(`${HOST}/users?q=${value}`, options).then((res) => res.json()),
+        ]).then((responses) => {
+            let res = responses[0].map((el) => `${el.name}_${el.id}`)
+            res = res.concat(responses[1].map((el) => `${el.name}_${el.id}`));
+            this.setState({
+                results: res,
+            });
+        })
     }
 
     render() {
@@ -212,7 +226,7 @@ class Conversation extends Component {
                     <List
                         bordered
                         dataSource={this.state.results}
-                        renderItem={item => (<List.Item onClick={() => console.log("les ge")}>{item}</List.Item>)}
+                        renderItem={item => (<List.Item onClick={() => console.log("les ge",item.split('_').pop())}>{item.split('_')[0]}</List.Item>)}
                     />
                 </Modal>
             </div>
