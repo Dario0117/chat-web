@@ -7,6 +7,7 @@ import { Input, List, Avatar } from 'antd';
 
 export default class Chat extends Component {
     state = {
+        name: "Chatting with the boi",
         data: [
             {
               title: 'Ant Design Title 1',
@@ -49,6 +50,9 @@ export default class Chat extends Component {
                 </div>
 
                 <div className="split right">
+                    <div className="conversation-name">
+                        <p>{this.state.name}</p>
+                    </div>
                     <div className="message-list">
                     <List
                         itemLayout="horizontal"
