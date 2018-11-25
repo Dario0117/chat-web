@@ -57,5 +57,25 @@ const searchRooms = (search_string, user_id) => {
     });
 }
 
+const getAllRooms = (user_id) => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT 
+            distinct r.id,
+            COALESCE(r.name, (SELECT name FROM user_room ur2, users us where ur2.users_id <> ? and us.id = ur2.users_id limit 1)) as name
+        FROM 
+            rooms r,
+            user_room ur
+        WHERE r.id IN (SELECT rooms_id FROM user_room ur2 where ur2.users_id = ?)
+        LIMIT 20;
+        `;
+        con.query(q, [ user_id, user_id ], (err, rows) => {
+            if (err) reject(err);
+            resolve(rows);
+        });
+    });
+}
+
 exports.createRoom = createRoom;
 exports.searchRooms = searchRooms;
+exports.getAllRooms = getAllRooms;

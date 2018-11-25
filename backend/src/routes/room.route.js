@@ -3,6 +3,7 @@ const passport = require('passport');
 const { 
     createRoom,
     searchRooms,
+    getAllRooms,
 } = require('../models/room.model');
 
 router.route('/rooms')
@@ -30,14 +31,24 @@ router.route('/rooms')
         }
     })
     .get((req, res) => {
-        let q = req.query.q || "";
-        searchRooms(q, req.user.id)
-            .then((data) => {
-                res.status(200).json(data);
-            })
-            .catch((err) => {
-                res.status(404).json(err);
-            });
+        if (Object.keys(req.query).length > 0) {
+            let { q } = req.query;
+            searchRooms(q, req.user.id)
+                .then((data) => {
+                    res.status(200).json(data);
+                })
+                .catch((err) => {
+                    res.status(404).json(err);
+                });
+        } else {
+            getAllRooms(req.user.id)
+                .then((data) => {
+                    res.status(200).json(data);
+                })
+                .catch((err) => {
+                    res.status(404).json(err);
+                });
+        }
     });
 
 module.exports = router;
