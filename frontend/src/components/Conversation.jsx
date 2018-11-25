@@ -19,57 +19,39 @@ class Conversation extends Component {
             NewCmodalVisible: false,
             SearchCmodalVisible: false,
             results: ['asd', 'asd2'],
-            conversations: [
-                'Name 1',
-                'Name 2',
-                'Name 3',
-                'Name 4',
-                'Name 5',
-                'Name 6',
-                'Name 7',
-                'Name 8',
-                'Name 9',
-                'Name 10',
-            ],
-            users: [
-                {
-                    id: 5,
-                    name: 'Name 1'
-                },
-                {
-                    id: 312,
-                    name: 'Name 2'
-                },
-                {
-                    id: 3534,
-                    name: 'Name 3'
-                },
-                {
-                    id: 646,
-                    name: 'Name 4'
-                },
-                {
-                    id: 2342,
-                    name: 'Name 5'
-                },
-                {
-                    id: 75657,
-                    name: 'Name 6'
-                },
-                {
-                    id: 7878,
-                    name: 'Name 7'
-                },
-            ],
+            conversations: [],
+            users: [],
         }
     }
 
     componentDidMount = () => {
-        this.setState({
-            children: this.state.users.map((user) => <Option key={user.name}>{user.name}</Option>)
-        });
+        const options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'bearer ' + localStorage.getItem('token'),
+            }
+        };
+        fetch('http://192.168.99.100:8080/users', options)
+            .then((res) => res.json())
+            .then((res) => {
+                this.setState({
+                    users: res,
+                    children: res.map((user) => <Option key={user.name}>{user.name}</Option>)
+                });
+            })
+            .catch(console.log);
+
+        fetch('http://192.168.99.100:8080/rooms', options)
+            .then((res) => res.json())
+            .then((res) => {
+                this.setState({
+                    conversations: res,
+                });
+            })
+            .catch(console.log);
     }
-    
+
 
     NewCOk = () => {
         console.log("Creating conv...");
@@ -135,7 +117,7 @@ class Conversation extends Component {
                 </Dropdown>
                 <ul>
                     {this.state.conversations.map((el) => {
-                        return (<li key={el}># {el}</li>)
+                        return (<li key={el.id}># {el.name}</li>)
                     })}
                 </ul>
 
