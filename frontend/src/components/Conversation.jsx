@@ -4,6 +4,7 @@ import {
     Modal, Select, Input, List
 } from 'antd';
 import './Conversation.css';
+import HOST from '../settings';
 
 const Option = Select.Option;
 const Search = Input.Search;
@@ -16,6 +17,7 @@ class Conversation extends Component {
             selectedUsers: [],
             children: [],
             convName: "",
+            convMsg: "",
             NewCmodalVisible: false,
             SearchCmodalVisible: false,
             results: ['asd', 'asd2'],
@@ -32,17 +34,17 @@ class Conversation extends Component {
                 'Authorization': 'bearer ' + localStorage.getItem('token'),
             }
         };
-        fetch('http://192.168.99.100:8080/users', options)
+        fetch(`${HOST}/users`, options)
             .then((res) => res.json())
             .then((res) => {
                 this.setState({
                     users: res,
-                    children: res.map((user) => <Option key={user.name}>{user.name}</Option>)
+                    children: res.map((user) => <Option key={`${user.name}_${user.id}`}>{user.name}</Option>)
                 });
             })
             .catch(console.log);
 
-        fetch('http://192.168.99.100:8080/rooms', options)
+        fetch(`${HOST}/rooms`, options)
             .then((res) => res.json())
             .then((res) => {
                 this.setState({
@@ -53,13 +55,52 @@ class Conversation extends Component {
     }
 
 
-    NewCOk = () => {
-        console.log("Creating conv...");
-        this.setState({
-            NewCmodalVisible: false,
-            selectedUsers: [],
-            convName: "",
-        });
+    NewCOk = async () => {
+        let body = {
+            message: this.state.convMsg,
+            receivers: this.state.selectedUsers.map((su) => {
+                return +su.split('_')[1];
+            }),
+        }
+        if (this.state.selectedUsers.length > 1){
+            body.name = this.state.convName;
+        }
+        let options = {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'bearer ' + localStorage.getItem('token'),
+            }
+        };
+        await fetch(`${HOST}/rooms`, options)
+            .then((res) => res.json())
+            .then(() => {
+                this.setState({
+                    NewCmodalVisible: false,
+                    selectedUsers: [],
+                    convName: "",
+                });
+            })
+            .catch(console.log);
+
+        const options2 = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'bearer ' + localStorage.getItem('token'),
+            }
+        };
+
+        await fetch(`${HOST}/rooms`, options2)
+            .then((res) => res.json())
+            .then((res) => {
+                this.setState({
+                    conversations: res,
+                });
+            })
+            .catch(console.log);
+
         // window.location.reload(true);
     }
 
@@ -91,11 +132,18 @@ class Conversation extends Component {
     }
 
     ConvNameChange = (e) => {
-        this.convName = e.target.value;
+        this.setState({
+            convName: e.target.value,
+        });
+    }
+
+    ConvMsgChange = (e) => {
+        this.setState({
+            convMsg: e.target.value,
+        });
     }
 
     searchConv = (value) => {
-        console.log(value)
         this.setState({
             results: this.state.results.concat(value)
         });
@@ -143,6 +191,9 @@ class Conversation extends Component {
                     <p></p>
                     <span>Insert the name of the conversation:</span>
                     <Input onChange={this.ConvNameChange} placeholder="Conversation name" />
+                    <p></p>
+                    <span>Insert the first message for this conversation:</span>
+                    <Input onChange={this.ConvMsgChange} placeholder="Message" />
                 </Modal>
 
                 <Modal
