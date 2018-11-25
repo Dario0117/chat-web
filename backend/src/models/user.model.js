@@ -24,13 +24,14 @@ const createUser = (data) => {
     });
 }
 
-const getAllUsers = () => {
+const getAllUsers = (user_id) => {
     return new Promise((resolve, reject) => {
         let q = `
-        SELECT username, name, email, profile_pic 
+        SELECT id, username, name, email, profile_pic 
         FROM users
+        WHERE id <> ?
         `;
-        con.query(q, (err, rows) => {
+        con.query(q, [ user_id ], (err, rows) => {
             if (err) reject(err);
             resolve(rows);
         });

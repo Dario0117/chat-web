@@ -63,7 +63,7 @@ router.route('/users')
                     res.status(404).json(err);
                 });
         } else {
-            getAllUsers()
+            getAllUsers(req.user.id)
                 .then((data) => {
                     res.status(200).json(data);
                 })

@@ -62,11 +62,15 @@ const getAllRooms = (user_id) => {
         let q = `
         SELECT 
             distinct r.id,
-            COALESCE(r.name, (SELECT name FROM user_room ur2, users us where ur2.users_id <> ? and us.id = ur2.users_id limit 1)) as name
+            COALESCE(r.name, (
+                        SELECT name 
+                        FROM user_room ur2, users us 
+                        where ur2.users_id <> ? and us.id = ur2.users_id  and ur2.rooms_id = r.id limit 1
+                        )
+                    ) as name
         FROM 
-            rooms r,
-            user_room ur
-        WHERE r.id IN (SELECT rooms_id FROM user_room ur2 where ur2.users_id = ?)
+            rooms r
+        WHERE r.id IN (SELECT rooms_id FROM user_room ur3 where ur3.users_id = ?)
         LIMIT 20;
         `;
         con.query(q, [ user_id, user_id ], (err, rows) => {

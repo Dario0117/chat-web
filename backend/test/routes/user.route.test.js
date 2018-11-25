@@ -57,7 +57,7 @@ describe('Router: User', () => {
                 expect(body.length).toBeTruthy();
                 for(let user of body){
                     expect(user.password).toBeFalsy();
-                    expect(user.id).toBeFalsy();
+                    expect(user.id).toBeTruthy();
                     expect(user.name).toBeTruthy();
                     expect(user.username).toBeTruthy();
                     expect(user.email).toBeTruthy();
