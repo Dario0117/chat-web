@@ -13,9 +13,12 @@ class Conversation extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedUsers: [],
+            children: [],
+            convName: "",
             NewCmodalVisible: false,
             SearchCmodalVisible: false,
-            results:  ['asd', 'asd2'],
+            results: ['asd', 'asd2'],
             conversations: [
                 'Name 1',
                 'Name 2',
@@ -59,30 +62,32 @@ class Conversation extends Component {
                 },
             ],
         }
-        this.children = [];
-        for (let user of this.state.users) {
-            this.children.push(<Option key={user.name}>{user.name}</Option>);
-        }
-
-        // Create new conversation fields
-        this.selectedUsers = [];
-        this.convName = "";
-
     }
+
+    componentDidMount = () => {
+        this.setState({
+            children: this.state.users.map((user) => <Option key={user.name}>{user.name}</Option>)
+        });
+    }
+    
 
     NewCOk = () => {
         console.log("Creating conv...");
-        this.selectedUsers = [];
-        this.convName = "";
-        this.setState({ NewCmodalVisible: false });
-        window.location.reload(true);
+        this.setState({
+            NewCmodalVisible: false,
+            selectedUsers: [],
+            convName: "",
+        });
+        // window.location.reload(true);
     }
 
     NewCCancel = () => {
-        this.selectedUsers = [];
-        this.convName = "";
-        this.setState({ NewCmodalVisible: false });
-        window.location.reload(true);
+        this.setState({
+            NewCmodalVisible: false,
+            selectedUsers: [],
+            convName: "",
+        });
+        // window.location.reload(true);
     }
 
     setSearchCVisible = (SearchCmodalVisible) => {
@@ -98,8 +103,9 @@ class Conversation extends Component {
     }
 
     handleChange = (value) => {
-        this.selectedUsers = value;
-        // console.log(this.selectedUsers);
+        this.setState({
+            selectedUsers: value,
+        });
     }
 
     ConvNameChange = (e) => {
@@ -108,8 +114,8 @@ class Conversation extends Component {
 
     searchConv = (value) => {
         console.log(value)
-        this.setState({ 
-            results: this.state.results.concat(value) 
+        this.setState({
+            results: this.state.results.concat(value)
         });
     }
 
@@ -147,10 +153,10 @@ class Conversation extends Component {
                         style={{ width: '100%' }}
                         placeholder="Please select users"
                         allowClear={true}
-                        defaultValue={[]}
+                        defaultValue={this.state.selectedUsers}
                         onChange={this.handleChange}
                     >
-                        {this.children}
+                        {this.state.children}
                     </Select>
                     <p></p>
                     <span>Insert the name of the conversation:</span>
