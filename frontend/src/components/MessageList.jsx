@@ -19,9 +19,10 @@ export default class MessageList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            chatName: "",
+            chatName:  "Please select a conversation...",
             messages: [],
             users: {},
+            chatDisabled: true,
         }
         this.ready = true;
     }
@@ -41,6 +42,9 @@ export default class MessageList extends Component {
     }
 
     refreshState = () => {
+        if (!this.props.roomID) {
+            return;
+        }
         this.ready = false;
         Promise.all([
             getUsersFromRoom(this.props.roomID),
@@ -55,6 +59,7 @@ export default class MessageList extends Component {
                     }
                 }
                 this.setState({
+                    chatDisabled: false,
                     chatName: results[1].name,
                     users: parsedUsers,
                     messages: results[1].messages.map((msg) => {
@@ -71,6 +76,11 @@ export default class MessageList extends Component {
         this.refreshState();
     }
 
+    sendMessage = (e) => {
+        this.props.sendMessage(e.target.value);
+        e.target.value = "";
+    }
+
     render() {
         if (this.ready) {
             this.refreshState();
@@ -83,6 +93,7 @@ export default class MessageList extends Component {
                 <div className="message-list">
                     <List
                         itemLayout="horizontal"
+                        locale={{emptyText: "No messages in this conversation..."}}
                         dataSource={this.state.messages}
                         renderItem={item => (
                             <List.Item>
@@ -96,7 +107,7 @@ export default class MessageList extends Component {
                     />
                 </div>
                 <div className="input-text">
-                    <Input placeholder="Message" />
+                    <Input onPressEnter={this.sendMessage} placeholder="Message" disabled={this.state.chatDisabled}/>
                 </div>
             </>
         )

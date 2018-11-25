@@ -4,6 +4,8 @@ import Profile from './Profile';
 import ConversationList from './ConversationList';
 import MessageList from './MessageList';
 import { getMyInfo, updateProfilePic } from '../utils/RequestManager';
+import io from "socket.io-client";
+import HOST from '../settings';
 
 export default class Chat extends Component {
 
@@ -13,9 +15,14 @@ export default class Chat extends Component {
         this.state = {
             myName: "",
             myPic: "",
-            selectedChat: 1,
-            data: []
+            myID: "",
+            selectedChat: "",
         }
+        this.socket = io(HOST);
+
+        this.socket.on('SERVER_SEND_MESSAGE', function (data) {
+            console.log({ data });
+        });
     }
 
     updatePic = (image) => {
@@ -28,8 +35,13 @@ export default class Chat extends Component {
             .then((res) => {
                 this.setState({
                     myName: res.name,
-                    myPic: res.profile_pic
-                })
+                    myPic: res.profile_pic,
+                    myID: res.id,
+                });
+                this.socket.emit('AUTHENTICATE', {
+                    client_id: this.state.myID,
+                    name: this.state.myName,
+                });
             });
     }
 
@@ -43,6 +55,14 @@ export default class Chat extends Component {
         })
     }
 
+    sendMessage = (message) => {
+        this.socket.emit('CLIENT_SEND_MESSAGE', {
+            message,
+            sender_id: this.state.myID,
+            conversation_id: this.state.selectedChat,
+        });
+    }
+
     render() {
         return (
             <div>
@@ -52,7 +72,7 @@ export default class Chat extends Component {
                 </div>
 
                 <div className="split right">
-                    <MessageList roomID={this.state.selectedChat} />
+                    <MessageList sendMessage={this.sendMessage} roomID={this.state.selectedChat} />
                 </div>
             </div>
         )
