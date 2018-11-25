@@ -1,0 +1,24 @@
+
+.conversation-name {
+    height: 5%;
+    border-bottom: 1px solid #e8e8e8;
+    left: 50%;
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.message-list {
+    height: 87%;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* background-color: red; */
+}
+
+.input-text {
+    height: 8%;
+    padding: 10px;
+    border-top: 1px solid #e8e8e8;
+    /* background-color: green; */
+}
