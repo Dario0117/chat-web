@@ -3,7 +3,7 @@ import {
     Menu, Dropdown, Icon,
     Modal, Select, Input, List
 } from 'antd';
-import './Conversation.css';
+import './ConversationList.css';
 import HOST from '../settings';
 
 const Option = Select.Option;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Chat.css';
 import Profile from './Profile';
-import Conversation from './Conversation';
+import ConversationList from './ConversationList';
 
 import { Input, List, Avatar } from 'antd';
 
@@ -45,8 +45,8 @@ export default class Chat extends Component {
         return (
             <div>
                 <div className="split left">
-                    <Profile name={"K1d"} src={"https://mobirise.com/bootstrap-template/profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg"}/>
-                    <Conversation />
+                    <Profile name={localStorage.getItem('name')} src={"https://mobirise.com/bootstrap-template/profile-template/assets/images/timothy-paul-smith-256424-1200x800.jpg"}/>
+                    <ConversationList />
                 </div>
 
                 <div className="split right">
