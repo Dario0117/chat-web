@@ -4,7 +4,10 @@ import {
     Modal, Select, Input, List
 } from 'antd';
 import './ConversationList.css';
-import HOST from '../settings';
+import {
+    getUsers, getRooms,
+    createRoom, searchConversation
+} from '../utils/RequestManager';
 
 const Option = Select.Option;
 const Search = Input.Search;
@@ -27,31 +30,20 @@ class Conversation extends Component {
     }
 
     componentDidMount = () => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'bearer ' + localStorage.getItem('token'),
-            }
-        };
-        fetch(`${HOST}/users`, options)
-            .then((res) => res.json())
+        getUsers()
             .then((res) => {
                 this.setState({
                     users: res,
                     children: res.map((user) => <Option key={`${user.name}_${user.id}`}>{user.name}</Option>)
                 });
-            })
-            .catch(console.log);
+            }).catch(console.log)
 
-        fetch(`${HOST}/rooms`, options)
-            .then((res) => res.json())
+        getRooms()
             .then((res) => {
                 this.setState({
                     conversations: res,
                 });
-            })
-            .catch(console.log);
+            }).catch(console.log);
     }
 
 
@@ -62,44 +54,26 @@ class Conversation extends Component {
                 return +su.split('_')[1];
             }),
         }
-        if (this.state.selectedUsers.length > 1){
+        if (this.state.selectedUsers.length > 1) {
             body.name = this.state.convName;
         }
-        let options = {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'bearer ' + localStorage.getItem('token'),
-            }
-        };
-        await fetch(`${HOST}/rooms`, options)
-            .then((res) => res.json())
+
+        await createRoom(body)
             .then(() => {
                 this.setState({
                     NewCmodalVisible: false,
                     selectedUsers: [],
                     convName: "",
                 });
-            })
-            .catch(console.log);
+            }).catch(console.log);
 
-        const options2 = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'bearer ' + localStorage.getItem('token'),
-            }
-        };
 
-        await fetch(`${HOST}/rooms`, options2)
-            .then((res) => res.json())
+        await getRooms()
             .then((res) => {
                 this.setState({
                     conversations: res,
                 });
-            })
-            .catch(console.log);
+            }).catch(console.log);
 
         // window.location.reload(true);
     }
@@ -144,23 +118,14 @@ class Conversation extends Component {
     }
 
     searchConv = (value) => {
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'bearer ' + localStorage.getItem('token'),
-            }
-        };
-        Promise.all([
-            fetch(`${HOST}/rooms?q=${value}`, options).then((res) => res.json()),
-            fetch(`${HOST}/users?q=${value}`, options).then((res) => res.json()),
-        ]).then((responses) => {
-            let res = responses[0].map((el) => `${el.name}_${el.id}`)
-            res = res.concat(responses[1].map((el) => `${el.name}_${el.id}`));
-            this.setState({
-                results: res,
+        searchConversation(value)
+            .then((responses) => {
+                let res = responses[0].map((el) => `${el.name}_${el.id}`)
+                res = res.concat(responses[1].map((el) => `${el.name}_${el.id}`));
+                this.setState({
+                    results: res,
+                });
             });
-        })
     }
 
     render() {
@@ -226,7 +191,7 @@ class Conversation extends Component {
                     <List
                         bordered
                         dataSource={this.state.results}
-                        renderItem={item => (<List.Item onClick={() => console.log("les ge",item.split('_').pop())}>{item.split('_')[0]}</List.Item>)}
+                        renderItem={item => (<List.Item onClick={() => console.log("les ge", item.split('_').pop())}>{item.split('_')[0]}</List.Item>)}
                     />
                 </Modal>
             </div>
