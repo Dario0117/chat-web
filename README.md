@@ -24,7 +24,7 @@
     `MYSQL_TEST_HOST` is a special case, becasue if you are using `docker toolbox` on windows (im not sure if works in the same way in Mac), you need to put the IP address provided with `Docker quickstart terminal`, generally is the same everywhere (`192.168.99.100`); if you are in linux (or another SO that runs docker nativelly) you can set this value with `localhost`. This is because the tests are runned on the host machine and not in the container, in the host you don't have access to `db` network.
 
     In `JWT_SECRET` you can set it with any string.
-3. In  the frontend directory you need to configure the host of the backend endpoint, to do it, edit the file called `/frontend/src/settings.js` the port `8080` is configured in `docker-compose.yml`, y ou can change it if you want, but be aware to modify it in both files.
+3. In  the frontend directory you need to configure the host of the backend endpoint, to do it, copy the file called `/frontend/src/settings.example.js` and rename the copy with `/frontend/src/settings.js` the port `8080` is configured in `docker-compose.yml`, y ou can change it if you want, but be aware to modify it in both files.
 
 4. Networks and endpoints configured, we need to install front and backend dependencies, move to the frontend and backend, then run `npm install`. After front end dependencies are installed, run `npm run build`
 
