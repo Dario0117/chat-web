@@ -1,0 +1,59 @@
+.split-auth {
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+}
+
+.left-auth {
+    left: 0;
+    width: 47%;
+    background-color: #4D394B;
+}
+
+.center-auth {
+    left: 47%;
+    width: 6%;
+    background-color: #4D394B;
+    color: white;
+    font-size: 30px;
+    font-style: italic;
+}
+
+.right-auth {
+    right: 0;
+    width: 47%;
+    background-color: #4D394B;
+}
+
+.box-style {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 50px;
+    border-radius: 5px;
+}
+
+.login-form-container {
+    width: 50%;
+}
+
+.or-form-container {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 50%;
+}
+
+.register-form-container {
+    width: 80%;
+}

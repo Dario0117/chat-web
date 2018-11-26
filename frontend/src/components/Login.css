@@ -1,0 +1,18 @@
+.btn-custom {
+    background-color: #896785;
+    border-color: #896785;
+}
+
+.btn-custom:hover {
+    background-color: #947090;
+    border-color: #896785;
+}
+
+.input-custom:hover {
+    border-color: #947090;
+}
+
+.input-custom:focus {
+    border-color: #947090;
+    box-shadow: 0.2px 0.2px 0.2px 0.2px #947090;
+}
