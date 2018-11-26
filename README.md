@@ -31,3 +31,8 @@
     **Extra step if you are using a unix based SO:** you may need to give execution permissions to a file located in `/backend/wait-for-it.sh` running `chmod +x /backend/wait-for-it.sh` on the root of the repository.
 
 5. Now, we have front and backend ready to start, move to the root of the repository (chat-web) and run `docker-compose up`, now you can access to the frontend using `HOST:9000` and backend `HOST:8080`
+
+
+## Database model
+
+![Database model](https://github.com/Dario0117/chat-web/blob/master/db-model.png)
