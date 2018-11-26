@@ -9,7 +9,7 @@ class NormalLoginForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                this.props.login(values.userName, values.passwordLogin);
             }
         });
     }
@@ -18,7 +18,7 @@ class NormalLoginForm extends Component {
         const { getFieldDecorator } = this.props.form;
         return (
             <>
-                <h1>Login</h1>
+                <center><h1>Login</h1></center>
                 <Form onSubmit={this.handleSubmit} className="login-form">
                     <FormItem>
                         {getFieldDecorator('userName', {
@@ -28,7 +28,7 @@ class NormalLoginForm extends Component {
                         )}
                     </FormItem>
                     <FormItem>
-                        {getFieldDecorator('password-login', {
+                        {getFieldDecorator('passwordLogin', {
                             rules: [{ required: true, message: 'Please input your Password!' }],
                         })(
                             <Input className="input-custom" type="password" placeholder="Password" />

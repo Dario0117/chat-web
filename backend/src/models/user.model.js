@@ -62,6 +62,9 @@ const login = (username, password) => {
         `;
         con.query(q, [username], (err, rows) => {
             if (err) return reject(err);
+            if (rows.length === 0) return reject({
+                msg: 'This user doesn\'t exists',
+            })
             if (bcrypt.compareSync(password, rows[0].password)){
                 resolve(rows);
             }else {

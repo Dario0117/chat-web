@@ -67,7 +67,7 @@ class RegistrationForm extends Component {
         const { getFieldDecorator } = this.props.form;
         return (
             <>
-                <h1>Register and login</h1>
+                <center><h1>Register and login</h1></center>
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem
                         {...formItemLayout}

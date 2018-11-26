@@ -6,6 +6,7 @@ import MessageList from './MessageList';
 import { getMyInfo, updateProfilePic } from '../utils/RequestManager';
 import io from "socket.io-client";
 import HOST from '../settings';
+import { Button } from 'antd';
 
 export default class Chat extends Component {
 
@@ -64,6 +65,9 @@ export default class Chat extends Component {
             <div>
                 <div className="split left">
                     <Profile updateProfilePic={this.updatePic} name={this.state.myName} src={this.state.myPic} />
+                    <center><Button onClick={this.props.logout} type="primary" className="login-form-button btn-custom" >
+                        Logout
+                    </Button></center>
                     <ConversationList changeSelectedRoom={this.changeSelectedRoom} />
                 </div>
 

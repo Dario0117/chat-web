@@ -107,7 +107,6 @@ export default class MessageList extends Component {
         if (this.ready) {
             this.refreshState();
         }
-        console.log(this.state)
         return (
             <>
                 <div className="conversation-name">
