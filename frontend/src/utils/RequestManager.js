@@ -104,7 +104,6 @@ const getUsersFromRoom = (room_id) => {
         .then((res) => res.json());
 }
 
-
 const login = (username, password) => {
     const options = {
         method: 'POST',
@@ -120,6 +119,18 @@ const login = (username, password) => {
         .then((res) => res.json());
 }
 
+const register = (data) => {
+    const options = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    };
+    return fetch(`${HOST}/register`, options)
+        .then((res) => res.json());
+}
+
 export {
     listUsers,
     listRooms,
@@ -130,4 +141,5 @@ export {
     getInfoFromRoom,
     getUsersFromRoom,
     login,
+    register,
 }

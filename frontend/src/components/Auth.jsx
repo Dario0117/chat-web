@@ -21,7 +21,7 @@ export default class Auth extends Component {
 
                 <div className="split-auth right-auth">
                     <div className="register-form-container box-style">
-                        <Register login={this.props.login} />
+                        <Register login={this.props.login} register={this.props.register} />
                     </div>
                 </div>
             </div>
