@@ -20,14 +20,26 @@ class NormalLoginForm extends Component {
             <>
                 <center><h1>Login</h1></center>
                 <Form onSubmit={this.handleSubmit} className="login-form">
-                    <FormItem>
+                    <FormItem
+                        label={(
+                            <span>
+                                Username
+                            </span>
+                        )}
+                    >
                         {getFieldDecorator('userName', {
                             rules: [{ required: true, message: 'Please input your username!' }],
                         })(
                             <Input className="input-custom" placeholder="Username" />
                         )}
                     </FormItem>
-                    <FormItem>
+                    <FormItem
+                        label={(
+                            <span>
+                                Password
+                            </span>
+                        )}
+                    >
                         {getFieldDecorator('passwordLogin', {
                             rules: [{ required: true, message: 'Please input your Password!' }],
                         })(

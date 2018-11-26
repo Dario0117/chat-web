@@ -71,3 +71,6 @@ typings/
 
 # Uploads temp folder
 backend/uploads
+
+# Frontend config
+frontend/src/settings.js

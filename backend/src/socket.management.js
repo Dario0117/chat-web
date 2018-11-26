@@ -15,6 +15,15 @@ module.exports = (server) => {
             };
         });
 
+        socket.on('CREATED_ROOM', (data) => {
+            for (let user of data.receivers) {
+                if (user in SocketConnections) {
+                    let socket = SocketConnections[`${user}`].socket;
+                    io.to(`${socket.id}`).emit('CREATED_ROOM', 'RELOAD_ROOMS');
+                }
+            }
+        });
+
         socket.on('disconnect', () => {
             let client_id;
             for(let k in SocketConnections){

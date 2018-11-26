@@ -76,7 +76,7 @@ export default class Chat extends Component {
                     <center><Button onClick={this.props.logout} type="primary" className="login-form-button btn-custom" >
                         Logout
                     </Button></center>
-                    <ConversationList changeSelectedRoom={this.changeSelectedRoom} />
+                    <ConversationList socket={this.socket} changeSelectedRoom={this.changeSelectedRoom} />
                 </div>
 
                 <div className="split center">

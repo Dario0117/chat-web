@@ -39,11 +39,13 @@ class Conversation extends Component {
             .then((users) => {
                 this.setState({
                     users,
-                })
+                    children: users.map((user) => <Option key={`${user.name}_${user.id}`}>{user.name}</Option>),
+                });
+                message.success('Users loaded');
             });
     }
 
-    componentDidMount = () => {
+    refresh = () => {
         Promise.all([
             listUsers(),
             listRooms(),
@@ -55,6 +57,15 @@ class Conversation extends Component {
                     conversations: responses[1],
                 });
             });
+    }
+
+    componentDidMount = () => {
+        this.refresh();
+        this.props.socket.on('CREATED_ROOM', (data) => {
+            if (data === 'RELOAD_ROOMS'){
+                this.refresh();
+            }
+        });
     }
 
     NewCOk = async () => {
@@ -97,6 +108,10 @@ class Conversation extends Component {
         }
 
         let room = await createRoom(body);
+        this.props.socket.emit('CREATED_ROOM', {
+            receivers: body.receivers,
+            room: room.id,
+        });
         this.props.changeSelectedRoom(room.id);
         let rooms = await listRooms();
 
