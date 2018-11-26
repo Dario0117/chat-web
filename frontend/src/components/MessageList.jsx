@@ -52,12 +52,18 @@ export default class MessageList extends Component {
         ])
             .then((results) => {
                 let parsedUsers = {};
+                let nameList = [];
                 for (let user of results[0]) {
                     parsedUsers[user.id] = {
                         profile_pic: user.profile_pic || default_pic,
                         name: user.name,
                     }
+                    nameList.push({
+                        name: user.name,
+                        profile_pic: user.profile_pic || default_pic,
+                    });
                 }
+                this.props.updateUserList(nameList);
                 this.setState({
                     chatDisabled: false,
                     chatName: results[1].name,

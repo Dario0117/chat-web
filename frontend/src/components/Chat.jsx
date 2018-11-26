@@ -7,6 +7,7 @@ import { getMyInfo, updateProfilePic } from '../utils/RequestManager';
 import io from "socket.io-client";
 import HOST from '../settings';
 import { Button } from 'antd';
+import UserList from './UserList';
 
 export default class Chat extends Component {
 
@@ -18,6 +19,7 @@ export default class Chat extends Component {
             myPic: "",
             myID: "",
             selectedChat: "",
+            userList: [],
         }
         this.socket = io(HOST);
     }
@@ -52,6 +54,12 @@ export default class Chat extends Component {
         })
     }
 
+    updateUserList = (list) => {
+        this.setState({
+            userList: list,
+        })
+    }
+
     sendMessage = (message) => {
         this.socket.emit('CLIENT_SEND_MESSAGE', {
             message,
@@ -71,8 +79,12 @@ export default class Chat extends Component {
                     <ConversationList changeSelectedRoom={this.changeSelectedRoom} />
                 </div>
 
+                <div className="split center">
+                    <MessageList updateUserList={this.updateUserList} socket={this.socket} sendMessage={this.sendMessage} roomID={this.state.selectedChat} />
+                </div>
+
                 <div className="split right">
-                    <MessageList socket={this.socket} sendMessage={this.sendMessage} roomID={this.state.selectedChat} />
+                    <UserList users={this.state.userList} />
                 </div>
             </div>
         )

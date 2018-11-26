@@ -21,7 +21,7 @@ class Conversation extends Component {
             children: [], // This is a list of the name and id (in the format name_id) of the users, this list is showed in the dropdown
             conversations: [], // The list of the conversations (private and groups) of the current session
             selectedUsers: [], // This list contains the list of the selected users in the dropdown in the modal of create a new conversation
-            
+
             convName: "", // Field of modal Create new conversation
             convMsg: "", // Field of modal Create new conversation
             conversationNameDisabled: true, // Field of modal Create new conversation
@@ -32,6 +32,15 @@ class Conversation extends Component {
             selectedConvFromSearch: "", // Field of modal search conversation
             searchValue: "", // Field of modal search conversation
         }
+    }
+
+    updateUsers = () => {
+        listUsers()
+            .then((users) => {
+                this.setState({
+                    users,
+                })
+            });
     }
 
     componentDidMount = () => {
@@ -74,7 +83,7 @@ class Conversation extends Component {
              * a conversation with this user and just open this conversation instead of
              * create a new one
              */
-            let searchedConversation = this.state.conversations.find((user) => 
+            let searchedConversation = this.state.conversations.find((user) =>
                 (user.name === this.state.selectedUsers[0].split('_')[0])
             );
 
@@ -121,7 +130,7 @@ class Conversation extends Component {
             if (!this.state.selectedConvFromSearch) {
                 message.error('You must select a conversation.');
                 return;
-            }else {
+            } else {
                 this.props.changeSelectedRoom(this.state.selectedConvFromSearch.split('_').pop());
             }
         }
@@ -214,7 +223,7 @@ class Conversation extends Component {
                     <span>* NOTE: If you select only one, it means that you are creating a private message.</span>
                     <Select
                         mode="multiple"
-                        style={{ width: '100%' }}
+                        style={{ width: '95%' }}
                         placeholder="Please select users"
                         allowClear={true}
                         defaultValue={this.state.selectedUsers}
@@ -223,6 +232,15 @@ class Conversation extends Component {
                     >
                         {this.state.children}
                     </Select>
+                    <Icon
+                        type="sync"
+                        onClick={this.updateUsers}
+                        style={{ 
+                            fontSize: '18px', 
+                            paddingLeft: '5px', 
+                            cursor: 'pointer' 
+                        }}
+                    />
                     <p></p>
                     <span>Insert the name of the conversation:</span>
                     <Input onChange={this.ConvNameChange} placeholder="Conversation name" value={this.state.convName} disabled={this.state.conversationNameDisabled} />

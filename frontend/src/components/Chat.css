@@ -12,10 +12,18 @@
     background-color: #4D394B;
 }
 
+.center {
+    left: 20%;
+    width: 60%;
+    background-color: #FFFFFF;
+}
+
 .right {
     right: 0;
-    width: 80%;
-    background-color: #FFFFFF;
+    width: 20%;
+    background-color: white;
+    padding: 10px;
+    border-left: 0.5px solid rgb(236, 236, 236);
 }
 
 .centered {
