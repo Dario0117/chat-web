@@ -108,8 +108,8 @@ describe('Model: Message', () => {
         expect(stored.id).toBeTruthy();
         
         let res = await fetchMessages(conversation_global.body.id, user_global_1.id)
-        expect(res.length).toBeTruthy();
-        expect(res.find(m => m.id === stored.id)).toBeTruthy();
+        expect(res.messages.length).toBeTruthy();
+        expect(res.messages.find(m => m.id === stored.id)).toBeTruthy();
         done();
     });
 });
