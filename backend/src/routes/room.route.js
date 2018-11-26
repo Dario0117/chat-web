@@ -54,7 +54,6 @@ router.route('/rooms')
         }
     });
 
-// TEMPORAL ENDPOINT
 router.route('/rooms/:id')
     .all(passport.authenticate('jwt', { session: false }))
     .get((req, res) => {
@@ -67,7 +66,6 @@ router.route('/rooms/:id')
             });
     });
 
-// TEMPORAL ENDPOINT
 router.route('/rooms/:id/users')
     .all(passport.authenticate('jwt', { session: false }))
     .get((req, res) => {
