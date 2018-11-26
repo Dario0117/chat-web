@@ -32,6 +32,15 @@
 
 5. Now, we have front and backend ready to start, move to the root of the repository (chat-web) and run `docker-compose up`, now you can access to the frontend using `HOST:9000` and backend `HOST:8080`
 
+### Without Docker
+
+Following the same example as the docker instructions, you just replace the host and db ip adadress with localhost.
+
+### Run tests
+
+Only the backend has tests (i have no time for frontend :c). For run backend test just move to the backend directory and run `npm test`. 
+
+**WARNING:** Database must be up, if you are using docker, run `docker-compose up` before run tests.
 
 ## Database model
 
