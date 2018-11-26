@@ -23,16 +23,14 @@ services:
       - db
     depends_on:
       - db
-  # frontend:
-  #   image: node:8.12.0-stretch
-  #   working_dir: /code
-  #   command: npm start
-  #   volumes:
-  #     - ./frontend:/code
-  #   ports:
-  #     - "3000:3000"
-  #   networks: 
-  #     - frontend
+  frontend:
+    image: nginx:1.15.6
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html:ro
+    ports:
+      - "9000:80"
+    networks: 
+      - frontend
   db:
     image: mysql:5.7.24
     ports:
@@ -46,5 +44,5 @@ services:
 
 networks: 
   backend:
-  # frontend:
+  frontend:
   db:
