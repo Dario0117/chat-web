@@ -69,6 +69,7 @@ export default class MessageList extends Component {
                     }),
                 });
                 this.ready = true;
+                this.scrollToBottom();
             });
     }
 
@@ -77,6 +78,12 @@ export default class MessageList extends Component {
             this.ready = true;
         }
         return true;
+    }
+
+    componentDidUpdate(nextProps, nextState) {
+        if (this.state.messages.length !== nextState.messages.length) {
+            this.scrollToBottom();
+        }
     }
 
     componentDidMount = () => {
@@ -103,6 +110,10 @@ export default class MessageList extends Component {
         e.target.value = "";
     }
 
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    }
+
     render() {
         if (this.ready) {
             this.refreshState();
@@ -127,6 +138,9 @@ export default class MessageList extends Component {
                             </List.Item>
                         )}
                     />
+                    <div style={{ float: "left", clear: "both" }}
+                        ref={(el) => { this.messagesEnd = el; }}>
+                    </div>
                 </div>
                 <div className="input-text">
                     <Input onPressEnter={this.sendMessage} placeholder="Message" disabled={this.state.chatDisabled} />

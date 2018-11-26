@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Menu, Dropdown, Icon,
+    Menu, Dropdown, Icon, message,
     Modal, Select, Input, List
 } from 'antd';
 import './ConversationList.css';
@@ -27,6 +27,8 @@ class Conversation extends Component {
             conversations: [],
             users: [],
             selectedConvFromSearch: "",
+            searchValue: "",
+            conversationNameDisabled: true,
         }
     }
 
@@ -49,6 +51,10 @@ class Conversation extends Component {
 
 
     NewCOk = async () => {
+        if (this.state.selectedUsers.length === 0 || this.state.convMsg === "") {
+            message.error('You must provide at least one user and the first message of the conversation.');
+            return;
+        }
         let body = {
             message: this.state.convMsg,
             receivers: this.state.selectedUsers.map((su) => {
@@ -57,6 +63,22 @@ class Conversation extends Component {
         }
         if (this.state.selectedUsers.length > 1) {
             body.name = this.state.convName;
+        } else {
+            let searchedConversation = this.state.conversations.find((user) => 
+                (user.name === this.state.selectedUsers[0].split('_')[0])
+            );
+
+            if (searchedConversation) {
+                this.props.changeSelectedRoom(searchedConversation.id);
+                this.setState({
+                    NewCmodalVisible: false,
+                    selectedUsers: [],
+                    convName: "",
+                    convMsg: "",
+                    conversationNameDisabled: true,
+                });
+                return;
+            }
         }
 
         await createRoom(body)
@@ -65,6 +87,8 @@ class Conversation extends Component {
                     NewCmodalVisible: false,
                     selectedUsers: [],
                     convName: "",
+                    convMsg: "",
+                    conversationNameDisabled: true,
                 });
             }).catch(console.log);
 
@@ -84,6 +108,7 @@ class Conversation extends Component {
             NewCmodalVisible: false,
             selectedUsers: [],
             convName: "",
+            convMsg: "",
         });
         // window.location.reload(true);
     }
@@ -92,7 +117,12 @@ class Conversation extends Component {
         if (!cancel) {
             this.props.changeSelectedRoom(this.state.selectedConvFromSearch.split('_').pop());
         }
-        this.setState({ SearchCmodalVisible, selectedConvFromSearch: '' });
+        this.setState({
+            SearchCmodalVisible,
+            selectedConvFromSearch: '',
+            searchValue: '',
+            results: [],
+        });
     }
 
     handleMenuClick = (e) => {
@@ -106,6 +136,7 @@ class Conversation extends Component {
     handleChange = (value) => {
         this.setState({
             selectedUsers: value,
+            conversationNameDisabled: (value.length < 2),
         });
     }
 
@@ -122,6 +153,7 @@ class Conversation extends Component {
     }
 
     searchConv = (value) => {
+        if (!value) return;
         searchConversation(value)
             .then((responses) => {
                 let res = responses[0].map((el) => `${el.name}_${el.id}`)
@@ -130,6 +162,12 @@ class Conversation extends Component {
                     results: res,
                 });
             });
+    }
+
+    changeSearchButton = (e) => {
+        this.setState({
+            searchValue: e.target.value,
+        })
     }
 
     render() {
@@ -169,16 +207,17 @@ class Conversation extends Component {
                         placeholder="Please select users"
                         allowClear={true}
                         defaultValue={this.state.selectedUsers}
+                        value={this.state.selectedUsers}
                         onChange={this.handleChange}
                     >
                         {this.state.children}
                     </Select>
                     <p></p>
                     <span>Insert the name of the conversation:</span>
-                    <Input onChange={this.ConvNameChange} placeholder="Conversation name" />
+                    <Input onChange={this.ConvNameChange} placeholder="Conversation name" value={this.state.convName} disabled={this.state.conversationNameDisabled} />
                     <p></p>
                     <span>Insert the first message for this conversation:</span>
-                    <Input onChange={this.ConvMsgChange} placeholder="Message" />
+                    <Input onChange={this.ConvMsgChange} placeholder="Message" value={this.state.convMsg} />
                 </Modal>
 
                 <Modal
@@ -189,7 +228,9 @@ class Conversation extends Component {
                     onCancel={() => this.setSearchCVisible(false, true)}
                 >
                     <Search
-                        placeholder=""
+                        placeholder="Type the conversation name..."
+                        value={this.state.searchValue}
+                        onChange={this.changeSearchButton}
                         onSearch={this.searchConv}
                         style={{ width: '100%' }}
                     />
