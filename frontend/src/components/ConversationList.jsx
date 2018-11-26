@@ -17,38 +17,36 @@ class Conversation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedUsers: [],
-            children: [],
-            convName: "",
-            convMsg: "",
-            NewCmodalVisible: false,
-            SearchCmodalVisible: false,
-            results: [],
-            conversations: [],
-            users: [],
-            selectedConvFromSearch: "",
-            searchValue: "",
-            conversationNameDisabled: true,
+            users: [], // List of all users on the app
+            children: [], // This is a list of the name and id (in the format name_id) of the users, this list is showed in the dropdown
+            conversations: [], // The list of the conversations (private and groups) of the current session
+            selectedUsers: [], // This list contains the list of the selected users in the dropdown in the modal of create a new conversation
+            
+            convName: "", // Field of modal Create new conversation
+            convMsg: "", // Field of modal Create new conversation
+            conversationNameDisabled: true, // Field of modal Create new conversation
+            NewCmodalVisible: false, // Field of modal Create new conversation
+
+            SearchCmodalVisible: false, // Field of modal search conversation
+            results: [], // Field of modal search conversation
+            selectedConvFromSearch: "", // Field of modal search conversation
+            searchValue: "", // Field of modal search conversation
         }
     }
 
     componentDidMount = () => {
-        listUsers()
-            .then((res) => {
+        Promise.all([
+            listUsers(),
+            listRooms(),
+        ])
+            .then((responses) => {
                 this.setState({
-                    users: res,
-                    children: res.map((user) => <Option key={`${user.name}_${user.id}`}>{user.name}</Option>)
+                    users: responses[0],
+                    children: responses[0].map((user) => <Option key={`${user.name}_${user.id}`}>{user.name}</Option>),
+                    conversations: responses[1],
                 });
-            }).catch(console.log)
-
-        listRooms()
-            .then((res) => {
-                this.setState({
-                    conversations: res,
-                });
-            }).catch(console.log);
+            });
     }
-
 
     NewCOk = async () => {
         if (this.state.selectedUsers.length === 0 || this.state.convMsg === "") {
@@ -57,65 +55,75 @@ class Conversation extends Component {
         }
         let body = {
             message: this.state.convMsg,
+            // for the list of the receiver users i only need his id's
+            // each selected user have the structure 'user_id', i
+            // extract this id with split
             receivers: this.state.selectedUsers.map((su) => {
                 return +su.split('_')[1];
             }),
         }
+        /**
+         * if the selected users have two or more (without the current user), 
+         * is considerated as a group and a group needs a name
+         */
         if (this.state.selectedUsers.length > 1) {
             body.name = this.state.convName;
         } else {
+            /**
+             * if is only one, it means that is a private conversation, and i check if exists
+             * a conversation with this user and just open this conversation instead of
+             * create a new one
+             */
             let searchedConversation = this.state.conversations.find((user) => 
                 (user.name === this.state.selectedUsers[0].split('_')[0])
             );
 
             if (searchedConversation) {
                 this.props.changeSelectedRoom(searchedConversation.id);
-                this.setState({
-                    NewCmodalVisible: false,
-                    selectedUsers: [],
-                    convName: "",
-                    convMsg: "",
+                this.resetCreateConversation({
                     conversationNameDisabled: true,
                 });
                 return;
             }
         }
 
-        await createRoom(body)
-            .then(() => {
-                this.setState({
-                    NewCmodalVisible: false,
-                    selectedUsers: [],
-                    convName: "",
-                    convMsg: "",
-                    conversationNameDisabled: true,
-                });
-            }).catch(console.log);
+        let room = await createRoom(body);
+        this.props.changeSelectedRoom(room.id);
+        let rooms = await listRooms();
 
-
-        await listRooms()
-            .then((res) => {
-                this.setState({
-                    conversations: res,
-                });
-            }).catch(console.log);
-
-        // window.location.reload(true);
+        this.resetCreateConversation({
+            conversationNameDisabled: true,
+            conversations: rooms,
+        });
     }
 
     NewCCancel = () => {
-        this.setState({
+        this.resetCreateConversation();
+    }
+
+    resetCreateConversation = (another = {}) => {
+        let modalState = {
             NewCmodalVisible: false,
             selectedUsers: [],
             convName: "",
             convMsg: "",
+        };
+        this.setState({
+            ...modalState,
+            ...another,
         });
-        // window.location.reload(true);
     }
 
     setSearchCVisible = (SearchCmodalVisible, cancel = false) => {
+        // If the user hit 'cancel', it only reset the fields
+        // else, get the selected conversation and show it
         if (!cancel) {
-            this.props.changeSelectedRoom(this.state.selectedConvFromSearch.split('_').pop());
+            if (!this.state.selectedConvFromSearch) {
+                message.error('You must select a conversation.');
+                return;
+            }else {
+                this.props.changeSelectedRoom(this.state.selectedConvFromSearch.split('_').pop());
+            }
         }
         this.setState({
             SearchCmodalVisible,
@@ -154,6 +162,9 @@ class Conversation extends Component {
 
     searchConv = (value) => {
         if (!value) return;
+        // This method search in conversation and user names
+        // and then, you can select if want to open a conversation with a user
+        // or with a group
         searchConversation(value)
             .then((responses) => {
                 let res = responses[0].map((el) => `${el.name}_${el.id}`)
@@ -243,8 +254,6 @@ class Conversation extends Component {
                         bordered
                         dataSource={this.state.results}
                         renderItem={item => (<List.Item onClick={(e) => {
-                            // console.log(e.target.parentElement);
-                            // e.target.parentElement.style.backgroundColor = '#4D394B';
                             this.setState({
                                 selectedConvFromSearch: item,
                             })

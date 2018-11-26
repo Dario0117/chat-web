@@ -71,7 +71,6 @@ const getAllRooms = (user_id) => {
         FROM 
             rooms r
         WHERE r.id IN (SELECT rooms_id FROM user_room ur3 where ur3.users_id = ?)
-        LIMIT 20;
         `;
         con.query(q, [ user_id, user_id ], (err, rows) => {
             if (err) reject(err);

@@ -142,14 +142,14 @@ describe('Router: Room', () => {
         }
         done();
     });
-    it('should list all (first 20) the conversations from a specific user', (done) => {
+    it('should list all the conversations from a specific user', (done) => {
          request(app)
             .get(`/rooms`)
             .set('Authorization', user_global_1.token)
             .expect(200)
             .then((res) => {
                 let { body } = res;
-                expect(body.length).toBeLessThanOrEqual(20);
+                expect(body.length).toBeTruthy();
                 done();
             });
     });
