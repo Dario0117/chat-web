@@ -19,7 +19,7 @@ export default class MessageList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            chatName:  "Please select a conversation...",
+            chatName: "Please select a conversation...",
             messages: [],
             users: {},
             chatDisabled: true,
@@ -72,11 +72,33 @@ export default class MessageList extends Component {
             });
     }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.roomID !== this.props.roomID) {
+            this.ready = true;
+        }
+        return true;
+    }
+
     componentDidMount = () => {
         this.refreshState();
+        this.props.socket.on('SERVER_SEND_MESSAGE', (data) => {
+            if (data.room_id === this.props.roomID){
+                this.ready = false;
+                let newMsg = {
+                    sender_id: data.sender_id,
+                    date: this.dateParser(new Date(data.date)),
+                    message: data.message,
+                    room_id: data.room_id,
+                };
+                this.setState({
+                    messages: this.state.messages.concat(newMsg),
+                });
+            }
+        });
     }
 
     sendMessage = (e) => {
+        if (!e.target.value) return;
         this.props.sendMessage(e.target.value);
         e.target.value = "";
     }
@@ -85,6 +107,7 @@ export default class MessageList extends Component {
         if (this.ready) {
             this.refreshState();
         }
+        console.log(this.state)
         return (
             <>
                 <div className="conversation-name">
@@ -93,7 +116,7 @@ export default class MessageList extends Component {
                 <div className="message-list">
                     <List
                         itemLayout="horizontal"
-                        locale={{emptyText: "No messages in this conversation..."}}
+                        locale={{ emptyText: "No messages in this conversation..." }}
                         dataSource={this.state.messages}
                         renderItem={item => (
                             <List.Item>
@@ -107,7 +130,7 @@ export default class MessageList extends Component {
                     />
                 </div>
                 <div className="input-text">
-                    <Input onPressEnter={this.sendMessage} placeholder="Message" disabled={this.state.chatDisabled}/>
+                    <Input onPressEnter={this.sendMessage} placeholder="Message" disabled={this.state.chatDisabled} />
                 </div>
             </>
         )

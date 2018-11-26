@@ -13,9 +13,9 @@ const storeMessage = (message, room_id, sender_id) => {
         `;
         con.query(q_create_room, [ message, room_id, sender_id ], (err, result) => {
             if (err) return reject(err);
-            resolve({
-                id: result.insertId,
-            });
+            getMessageByID(result.insertId)
+                .then(resolve)
+                .catch(reject);
         });
     });
 }
@@ -64,5 +64,18 @@ const fetchMessages = (room_id, user_id) => {
     });
 }
 
+const getMessageByID = (id) => {
+    return new Promise((resolve, reject) => {
+        let q = `
+        SELECT * FROM messages where id = ?
+        `;
+        con.query(q, [id], (err, rows) => {
+            if (err) reject(err);
+            resolve(rows[0]);
+        });
+    });
+}
+
 exports.storeMessage = storeMessage;
 exports.fetchMessages = fetchMessages;
+exports.getMessageByID = getMessageByID;

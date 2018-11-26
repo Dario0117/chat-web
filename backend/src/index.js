@@ -4,6 +4,8 @@ const connection = require('./db');
 const passport = require('passport');
 const cors = require('cors');
 const socket = require('socket.io');
+const { getUsersFromRoom } = require('./models/room.model');
+const { storeMessage } = require('./models/message.model');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -48,13 +50,15 @@ if (process.env.NODE_ENV !== 'test') {
                     delete SocketConnections[`${client_id}`];
                 });
 
-                socket.on('CLIENT_SEND_MESSAGE', (data) => {
-                    let cons = {};
-                    for(let k in SocketConnections) {
-                        cons[k] = {...SocketConnections[k]};
-                        delete cons[k].socket;
+                socket.on('CLIENT_SEND_MESSAGE', async (data) => {
+                    let message = await storeMessage(data.message, data.conversation_id, data.sender_id);
+                    let users = await getUsersFromRoom(data.conversation_id)
+                    for (let user of users) {
+                        if (user.id in SocketConnections) {
+                            let socket = SocketConnections[`${user.id}`].socket;
+                            io.to(`${socket.id}`).emit('SERVER_SEND_MESSAGE', message);
+                        }
                     }
-                    io.emit('SERVER_SEND_MESSAGE', {data,cons});
                 });
             });
         }

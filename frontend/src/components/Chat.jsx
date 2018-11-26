@@ -19,10 +19,6 @@ export default class Chat extends Component {
             selectedChat: "",
         }
         this.socket = io(HOST);
-
-        this.socket.on('SERVER_SEND_MESSAGE', function (data) {
-            console.log({ data });
-        });
     }
 
     updatePic = (image) => {
@@ -72,7 +68,7 @@ export default class Chat extends Component {
                 </div>
 
                 <div className="split right">
-                    <MessageList sendMessage={this.sendMessage} roomID={this.state.selectedChat} />
+                    <MessageList socket={this.socket} sendMessage={this.sendMessage} roomID={this.state.selectedChat} />
                 </div>
             </div>
         )
