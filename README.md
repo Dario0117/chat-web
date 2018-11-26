@@ -28,7 +28,7 @@
 
 4. Networks and endpoints configured, we need to install front and backend dependencies, move to the frontend and backend, then run `npm install`. After front end dependencies are installed, run `npm run build`
 
-    **Extra step if you are using a unix based SO:** you may need to give execution permissions to a file located in `/backend/wait-for-it.sh` running `chmod +x /backend/wait-for-it.sh` on the root of the repository.
+    **Extra step if you are using a unix based SO:** you may need to give execution permissions to a file located in `/backend/wait-for-it.sh` running `chmod +x ./backend/wait-for-it.sh` on the root of the repository.
 
 5. Now, we have front and backend ready to start, move to the root of the repository (chat-web) and run `docker-compose up`, now you can access to the frontend using `HOST:9000` and backend `HOST:8080`
 
